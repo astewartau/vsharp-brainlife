@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+julia_depot/
+julia-1.9.3/
+mask/
+tissue_freq/
+config.json

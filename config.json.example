@@ -1,4 +1,8 @@
 {
-    "t1": "t1.nii.gz",
-    "outres": "1 1 1"
+    "frequency": "/home/ashley/repos/romeo-brainlife/fmap/fieldmap.nii.gz",
+    "mask": "/home/ashley/repos/romeo-brainlife/mask/mask.nii.gz",
+    "input_units": "Hz",
+    "output_units": "Hz",
+    "B0": 7.0,
+    "TE": 0.005
 }
