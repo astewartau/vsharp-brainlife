@@ -5,7 +5,7 @@ try
     using JSON, QSM, NIfTI, MriResearchTools
 catch
     println("[INFO] Installing Julia packages...")
-    ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0
+    ENV["JULIA_PKG_PRECOMPILE_AUTO"] = 0
     Pkg.add(Pkg.PackageSpec(name="JSON", version=v"0.21.4"))
     Pkg.add(Pkg.PackageSpec(name="QSM", version=v"0.5.4"))
     Pkg.add(Pkg.PackageSpec(name="NIfTI", version=v"0.5.6"))
@@ -14,10 +14,10 @@ catch
 end
 
 function load_config(filename)
-	open(filename, "r") do file
-		config_data = JSON.parse(file)
-		return config_data
-	end
+    open(filename, "r") do file
+        config_data = JSON.parse(file)
+        return config_data
+    end
 end
 
 function voxel_size_safe(header::NIfTI.NIfTI1Header)
@@ -32,15 +32,33 @@ function voxel_size_safe(header::NIfTI.NIfTI1Header)
     Tuple(header.pixdim[i] * multiplier for i in 2:dim_count+1)
 end
 
+function get_B0(config_data)
+    for entry in config_data["_inputs"]
+        if entry["id"] == "fieldmap"
+            return entry["meta"]["MagneticFieldStrength"]
+        end
+    end
+    error("MagneticFieldStrength not found in _inputs for fieldmap")
+end
+
+function get_TE(config_data)
+    for entry in config_data["_inputs"]
+        if entry["id"] == "fieldmap"
+            return entry["meta"]["EchoTime"]
+        end
+    end
+    error("EchoTime not found in _inputs for fieldmap")
+end
+
 function main()
     println("[INFO] Loading config.json...")
-	config_data = load_config("config.json")
-		
-	println("[INFO] Extracting information...")
-	fieldmap_path = config_data["fieldmap"]
-	mask_path = config_data["mask"]
-	B0 = config_data["B0"]
-	TE = config_data["TE"]
+    config_data = load_config("config.json")
+    
+    println("[INFO] Extracting information...")
+    fieldmap_path = config_data["fieldmap"]
+    mask_path = config_data["mask"]
+    TE = haskey(config_data, "TE") ? config_data["TE"] : get_TE(config_data)
+    B0 = haskey(config_data, "B0") ? config_data["B0"] : get_B0(config_data)
 
     println("[INFO] Checking files exist...")
     all_files_exist = true
