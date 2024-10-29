@@ -60,20 +60,6 @@ function main()
     TE = haskey(config_data, "TE") ? config_data["TE"] : get_TE(config_data)
     B0 = haskey(config_data, "B0") ? config_data["B0"] : get_B0(config_data)
 
-    println("[INFO] Checking files exist...")
-    all_files_exist = true
-    for path in [fieldmap_path, mask_path]
-        if !isfile(path)
-            println("Error: File not found: $path")
-            all_files_exist = false
-        end
-    end
-
-    if !all_files_exist
-        println("[ERROR] Missing files! Exiting...")
-        exit(1)
-    end
-
     println("[INFO] Loading NIfTI images...")
     fieldmap_nii = niread(fieldmap_path)
     
