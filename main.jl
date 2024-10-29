@@ -39,8 +39,6 @@ function main()
 	println("[INFO] Extracting information...")
 	fieldmap_path = config_data["fieldmap"]
 	mask_path = config_data["mask"]
-	input_units = config_data["input_units"]
-	output_units = config_data["output_units"]
 	B0 = config_data["B0"]
 	TE = config_data["TE"]
 
@@ -69,13 +67,9 @@ function main()
     fieldmap = fieldmap_nii.raw .* mask
 
     println("[INFO] Converting units to Hz...")
-    if input_units == "rad/s"
-        fieldmap = fieldmap ./ (2π)
-    elseif input_units == "radians"
-        γ = 267.52e6 # rad/s/T
-        @views for t in axes(fieldmap, 4)
-            fieldmap[:, :, :, t] .*= inv(B0 * γ * TE)
-        end
+    γ = 267.52e6 # rad/s/T
+    @views for t in axes(fieldmap, 4)
+        fieldmap[:, :, :, t] .*= inv(B0 * γ * TE)
     end
 
     println("[INFO] Performing V-SHARP background field removal...")
