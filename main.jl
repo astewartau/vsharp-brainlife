@@ -99,6 +99,7 @@ function main()
     println("[INFO] Saving outputs...")
     mkpath("fmap")
     savenii(tissue_phase, "fieldmap.nii.gz", "fmap", fieldmap_nii.header)
+    mkpath("mask")
     savenii(vsharp_mask, "mask.nii.gz", "mask", fieldmap_nii.header)
 
     if magnitude_path != nothing
