@@ -56,7 +56,8 @@ function main()
     
     println("[INFO] Extracting information...")
     mask_path = config_data["mask"]
-    fieldmap_path = joinpath(config_data["fieldmap"], "fieldmap.nii.gz")
+    #fieldmap_path = joinpath(config_data["fieldmap"], "fieldmap.nii.gz")
+    fieldmap_path = config_data["fieldmap"]
     TE = haskey(config_data, "TE") ? config_data["TE"] : get_TE(config_data)
     B0 = haskey(config_data, "B0") ? config_data["B0"] : get_B0(config_data)
 
