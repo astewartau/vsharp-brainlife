@@ -55,18 +55,18 @@ function main()
     config_data = load_config("config.json")
     
     println("[INFO] Extracting information...")
-    fieldmap_path = config_data["fieldmap"]
     mask_path = config_data["mask"]
+    fieldmap_path = config_data["fieldmap"]
     TE = haskey(config_data, "TE") ? config_data["TE"] : get_TE(config_data)
     B0 = haskey(config_data, "B0") ? config_data["B0"] : get_B0(config_data)
 
     println("[INFO] Loading NIfTI images...")
-    fieldmap_nii = niread(fieldmap_path)
-    
-    vsz = voxel_size_safe(fieldmap_nii.header)
-    println("[INFO] Read voxel size ", vsz)
-
     mask_nii = niread(mask_path)
+    fieldmap_nii = niread(fieldmap_path)
+    vsz = voxel_size_safe(fieldmap_nii.header)
+    println("[INFO] Voxel size is ", vsz)
+
+    println("[INFO] Masking fieldmap...", vsz)
     mask = !=(0).(mask_nii.raw)
     fieldmap = fieldmap_nii.raw .* mask
 
