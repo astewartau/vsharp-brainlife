@@ -61,7 +61,7 @@ function main()
     magnitude_path = haskey(config_data, "magnitude") ? config_data["magnitude"] : nothing
     magnitude_json_path = haskey(config_data, "magnitude_json") ? config_data["magnitude_json"] : nothing
     fieldmap_json_path = haskey(config_data, "fieldmap_json") ? config_data["fieldmap_json"] : nothing
-    if haskey(config_data, "input_units") == false & (fieldmap_json_path != nothing)
+    if !haskey(config_data, "input_units") && (fieldmap_json_path !== nothing)
         error("Values for either 'input_units' or 'fieldmap_json' are required!")
     end
     fieldmap_units = haskey(config_data, "input_units") ? config_data["input_units"] : load_json(fieldmap_json_path)["Units"]
