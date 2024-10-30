@@ -13,10 +13,10 @@ catch
     using JSON, QSM, NIfTI, MriResearchTools
 end
 
-function load_config(filename)
+function load_json(filename)
     open(filename, "r") do file
-        config_data = JSON.parse(file)
-        return config_data
+        json_data = JSON.parse(file)
+        return json_data
     end
 end
 
@@ -52,14 +52,13 @@ end
 
 function main()
     println("[INFO] Loading config.json...")
-    config_data = load_config("config.json")
+    config_data = load_json("config.json")
     
     println("[INFO] Extracting information...")
     mask_path = config_data["mask"]
-    #fieldmap_path = joinpath(config_data["fieldmap"], "fieldmap.nii.gz")
     fieldmap_path = config_data["fieldmap"]
-    TE = haskey(config_data, "TE") ? config_data["TE"] : get_TE(config_data)
     B0 = haskey(config_data, "B0") ? config_data["B0"] : get_B0(config_data)
+    fieldmap_units = haskey(config_data, "input_units") ? config_data["input_units"] : load_json(config_data["fieldmap_json"])["Units"]
 
     println("[INFO] Loading NIfTI images...")
     mask_nii = niread(mask_path)
@@ -71,10 +70,21 @@ function main()
     mask = !=(0).(mask_nii.raw)
     fieldmap = fieldmap_nii.raw .* mask
 
-    println("[INFO] Converting units to Hz...")
-    γ = 267.52e6 # rad/s/T
-    @views for t in axes(fieldmap, 4)
-        fieldmap[:, :, :, t] .*= inv(B0 * γ * TE)
+    println("[INFO] Converting fieldmap units to Hz...")
+    γ = 267.52e6  # rad/s/T
+
+    if fieldmap_units == "rad/s"
+        @views for t in axes(fieldmap, 4)
+            fieldmap[:, :, :, t] .*= inv(2 * π)
+        end
+    elseif fieldmap_units == "Tesla"
+        @views for t in axes(fieldmap, 4)
+            fieldmap[:, :, :, t] .*= γ / (2 * π)
+        end
+    elseif fieldmap_units == "Hz"
+        println("[INFO] Fieldmap is already in Hz.")
+    else
+        error("Unsupported fieldmap units: $fieldmap_units")
     end
 
     println("[INFO] Performing V-SHARP background field removal...")

@@ -1,6 +1,7 @@
 {
-    "frequency": "/home/ashley/repos/romeo-brainlife/fmap/fieldmap.nii.gz",
-    "mask": "/home/ashley/repos/romeo-brainlife/mask/mask.nii.gz",
-    "B0": 7.0,
-    "TE": 0.005
+    "fieldmap": "fieldmap.nii.gz",
+    "fieldmap_json": "fieldmap.json",
+    "mask": "mask.nii.gz",
+    "input_units": "Hz",
+    "B0": 7.0
 }
