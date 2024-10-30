@@ -9,6 +9,12 @@
 
 export container=romeo_3.2.8_20220224
 
+echo "[DEBUG] ls ../"
+ls ../
+
+echo "[DEBUG] ls ../*"
+ls ../*
+
 echo "[INFO] Installing Julia v1.9.3..."
 if [ ! -d "julia-1.9.3" ]; then
     wget https://julialang-s3.julialang.org/bin/linux/x64/1.9/julia-1.9.3-linux-x86_64.tar.gz
