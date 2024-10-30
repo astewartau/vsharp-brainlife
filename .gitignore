@@ -131,5 +131,5 @@ dmypy.json
 julia_depot/
 julia-1.9.3/
 mask/
-tissue_freq/
+fmap/
 config.json

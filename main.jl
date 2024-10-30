@@ -58,7 +58,10 @@ function main()
     mask_path = config_data["mask"]
     fieldmap_path = config_data["fieldmap"]
     B0 = haskey(config_data, "B0") ? config_data["B0"] : get_B0(config_data)
-    fieldmap_units = haskey(config_data, "input_units") ? config_data["input_units"] : load_json(config_data["fieldmap_json"])["Units"]
+    magnitude_path = haskey(config_data, "magnitude") ? config_data["magnitude"] : nothing
+    magnitude_json_path = haskey(config_data, "magnitude_json") ? config_data["magnitude_json"] : nothing
+    fieldmap_json_path = haskey(config_data, "fieldmap_json") ? config_data["fieldmap_json"] : nothing
+    fieldmap_units = haskey(config_data, "input_units") ? config_data["input_units"] : load_json(fieldmap_json_path)["Units"]
 
     println("[INFO] Loading NIfTI images...")
     mask_nii = niread(mask_path)
@@ -66,7 +69,7 @@ function main()
     vsz = voxel_size_safe(fieldmap_nii.header)
     println("[INFO] Voxel size is ", vsz)
 
-    println("[INFO] Masking fieldmap...", vsz)
+    println("[INFO] Masking fieldmap...")
     mask = !=(0).(mask_nii.raw)
     fieldmap = fieldmap_nii.raw .* mask
 
@@ -91,10 +94,22 @@ function main()
     tissue_phase, vsharp_mask = vsharp(fieldmap, mask, vsz)
 
     println("[INFO] Saving outputs...")
-    mkpath("tissue_freq")
-    savenii(tissue_phase, "t2starw.nii.gz", "tissue_freq", fieldmap_nii.header)
-    mkpath("mask")
+    mkpath("fmap")
+    savenii(tissue_phase, "fieldmap.nii.gz", "fmap", fieldmap_nii.header)
     savenii(vsharp_mask, "mask.nii.gz", "mask", fieldmap_nii.header)
+
+    if magnitude_path != nothing
+        println("[INFO] Copying input magnitude...")
+        cp(magnitude_path, joinpath("fmap", basename(magnitude_path)), force=true)
+    end
+    if magnitude_json_path != nothing
+        println("[INFO] Copying input magnitude JSON...")
+        cp(magnitude_json_path, joinpath("fmap", basename(magnitude_json_path)), force=true)
+    end
+    if fieldmap_json_path != nothing
+        println("[INFO] Copying input fieldmap JSON...")
+        cp(fieldmap_json_path, joinpath("fmap", basename(fieldmap_json_path)), force=true)
+    end
 
     println("[INFO] V-SHARP processing completed successfully.")
 end
