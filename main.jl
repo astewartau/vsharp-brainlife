@@ -41,15 +41,6 @@ function get_B0(config_data)
     error("MagneticFieldStrength not found in _inputs for fieldmap")
 end
 
-function get_TE(config_data)
-    for entry in config_data["_inputs"]
-        if entry["id"] == "fieldmap"
-            return entry["meta"]["EchoTime"]
-        end
-    end
-    error("EchoTime not found in _inputs for fieldmap")
-end
-
 function main()
     println("[INFO] Loading config.json...")
     config_data = load_json("config.json")
