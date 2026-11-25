@@ -1,5 +1,34 @@
 # app-template-python
 
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+> **Removes the background field from a QSM total field map with V-SHARP (QSM.jl in Julia), producing a tissue (local) field map and the eroded V-SHARP mask.**
+
+Installs Julia 1.9.3 and the QSM.jl, NIfTI.jl and MriResearchTools packages at run time, masks the field map, converts it to Hz using the field map units (from input_units or the fieldmap JSON) and the field strength, and runs V-SHARP background field removal. Use it between phase unwrapping/field estimation and dipole inversion in a QSM pipeline. Needs internet access on the compute node; the README is an unfilled template.
+
+| | |
+|---|---|
+| 📥 **Inputs** | `neuro/fmap` · `neuro/mask` |
+| 📤 **Outputs** | `neuro/fmap` · `neuro/mask` |
+| ⚙️ **Resources** | 16 GB memory · 1 h walltime |
+| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.835](https://doi.org/10.25663/brainlife.app.835) |
+
+#### 📥 Inputs
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `fieldmap` | `neuro/fmap` (single) | yes | Total B0 field map with magnitude and JSON sidecars. Field strength must be in the input metadata (MagneticFieldStrength) or B0; units must be in the fieldmap JSON (Units) or input_units. |
+| `mask` | `neuro/mask` | yes | Brain mask restricting the field map. |
+
+#### 📤 Outputs
+
+| Output | Datatype | Description |
+|---|---|---|
+| `fmap` | `neuro/fmap` | Magnetic field variations caused by tissues (background field removed). |
+| `mask` | `neuro/mask` | V-SHARP mask |
+
+<!-- brainlife-app:end -->
+
 [![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.444-blue.svg)](https://doi.org/10.25663/bl.app.444)
 
